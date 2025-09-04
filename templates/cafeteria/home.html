@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="welcome-section">
+    {% load static %}
+    <img src="{% static 'img/Flat illustration Food logo.png' %}" alt="Campus Cafeteria Logo" class="welcome-icon">
+    <h2 class="welcome-title">Welcome to Campus Cafeteria</h2>
+    <p class="welcome-subtitle">Delicious meals, quick service, great prices!</p>
+    <div class="welcome-buttons">
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-orange btn-large">Go to Dashboard</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-orange btn-large">Get Started</a>
+            <a href="{% url 'customer_dashboard' %}" class="btn btn-light btn-large">Browse Menu</a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🍔</div>
+            <h3>Fresh Food</h3>
+            <p>Made daily with fresh ingredients</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Quick Service</h3>
+            <p>Fast ordering and pickup</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💰</div>
+            <h3>Great Prices</h3>
+            <p>Student-friendly pricing</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

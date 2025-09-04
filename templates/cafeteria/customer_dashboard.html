@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="dashboard-welcome">
+        <h2 class="dashboard-title">Welcome, {{ user.first_name|default:user.username }}! 👋</h2>
+        <p class="dashboard-subtitle">Ready to order something delicious?</p>
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="card search-card">
+    <form method="GET" class="search-form">
+        <div class="search-group">
+            <label class="form-label">Search</label>
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Search products..." class="form-input search-input">
+        </div>
+        <div class="search-group">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-input category-select">
+                <option value="">All</option>
+                <option value="Food" {% if category_filter == 'Food' %}selected{% endif %}>Food</option>
+                <option value="Drink" {% if category_filter == 'Drink' %}selected{% endif %}>Drink</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-orange search-btn">Filter</button>
+    </form>
+</div>
+
+<!-- Menu -->
+<div class="card">
+    <h3 class="card-title">Menu</h3>
+    <div class="menu-grid" id="menu-grid">
+    {% for product in products %}
+    <div class="menu-item" data-category="{{ product.category }}">
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="menu-img">
+        <h4 class="menu-name">{{ product.name }}</h4>
+        <p class="menu-category">{{ product.category }}</p>
+        <p class="menu-price">${{ product.price }}</p>
+        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-orange btn-full add-to-cart-btn">Add to Cart</a>
+    </div>
+    {% empty %}
+    <div class="empty-state">
+        <p>No products found.</p>
+    </div>
+    {% endfor %}
+    </div>
+</div>
+
+
+<!-- Cart -->
+<!-- Cart Section -->
+<div class="card">
+    <h3 class="card-title">Cart</h3>
+    <div class="cart-list">
+        {% if cart_items %}
+            {% for item in cart_items %}
+                <div>
+                    {{ item.product.emoji }} {{ item.product.name }} -
+                    ${{ item.product.price }} each × {{ item.quantity }}
+                </div>
+            {% endfor %}
+            <p>Total: ${{ cart_total }}</p>
+            <form method="post" action="{% url 'place_order' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-green">Place Order</button>
+            </form>
+        {% else %}
+            <p>Your cart is empty</p>
+        {% endif %}
+    </div>
+</div>
+
+
+<!-- Recent Orders -->
+<div class="card">
+    <h3 class="card-title">Recent Orders </h3>
+    <div class="orders-list">
+        {% if recent_orders %}
+            {% for order in recent_orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-info">
+                        <div class="order-id">Order #{{ order.id }}</div>
+                        <div class="order-date">{{ order.created_at|date:"M d, Y H:i" }}</div>
+                    </div>
+                    <span class="order-status status-{{ order.status|lower }}">{{ order.status }}</span>
+                </div>
+                <div class="order-total">Total: ${{ order.total_amount }}</div>
+
+                <div class="order-items">
+                    <ul>
+                        {% for item in order.orderitem_set.all %}
+                            <li>
+                                {{ item.product.emoji }} {{ item.product.name }} × {{ item.quantity }}
+                                ( ${{ item.product.price }} each )
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No orders yet</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
