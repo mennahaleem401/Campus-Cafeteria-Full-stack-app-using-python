@@ -37,7 +37,7 @@ Admins can manage products, track orders, and update their statuses (e.g., from 
 
 ## ⚙️ Tech Stack
 - **Backend:** Django (Python)
-- **Database:** SQLite (default, can be changed to PostgreSQL/MySQL)
+- **Database:**  PostgreSQL
 - **Frontend:** HTML, CSS (with responsive design)
 - **Static & Media Handling:** Django Staticfiles & Media uploads
 - **Authentication:** Django Auth System
